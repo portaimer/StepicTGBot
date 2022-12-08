@@ -1,0 +1,55 @@
+@dp.message_handler() #Эхо бот в одну функцию ... пересылает нам то что мы ему прислали
+async def echo(message: types.Message):
+    await message.answer(text=message.text) #Написать сообщение
+
+@dp.message_handler()  # Функция для эхо бота переводит все символы в верхний регистр
+async def echo_upper(message: types.Message):
+    if message.text.count('') >= 1: # Отвечать на сообщение если в нем больше 1 слова, не забываем что считаем от 0
+        await message.answer(text=message.text)
+
+@dp.message_handler()  # Функция для эхо бота переводит все символы в верхний регистр
+async def echo_upper(message: types.Message):
+    await message.answer(text=message.text.upper())
+
+
+
+HELP_COMMAND = """
+/help - список комманд
+/start - начать работу с ботом
+""" # Создал новую переменную для описания списка команд что бы не переписывать их в функцию
+
+@dp.message_handler(commands=['description']) #По команде /description Выводит то что мы научили делать бот (описание его функций)
+async def desc_comand(message: types.Message):
+    await message.answer('Данный бот умеет отправлять рандомные символы латинского алфавита ')
+    await message.delete()
+
+@dp.message_handler(commands=['help'])
+async def help_command(message: types.Message):
+    await message.reply(text=HELP_COMMAND) #reply - просто эхом выведет список команд
+
+@dp.message_handler(commands=['start'])
+async def help_command(message: types.Message):
+    await message.answer(text="Добро пожаловать в наш Телеграмм бот")
+    await message.delete() #При использовании answer можно удалить сообщение отправляемое боту
+
+
+@dp.message_handler() #Ответ пользователю рандомным символом алфавита
+async def send_random_letter(message: types.Message):
+    await message.reply(random.choice(string.ascii_letters))
+
+
+
+count = 0 #При создании функции подсчёта создаём переменную глобальную count
+
+@dp.message_handler(commands=['count']) #Функция подсчета вызовов бота
+async  def check_count(message: types.Message):
+    global count
+    await  message.answer(f'COUNT: {count}')
+    count += 1
+
+@dp.message_handler() #Функция отвечающая за проверку содержиться ли в веденом сообщении 0... можно задать проверять любой аргумент
+async def check_zero(message: types.Message):
+    if '0' in message.text:
+        await message.reply('YES')
+    else:
+        await message.reply('NO')
