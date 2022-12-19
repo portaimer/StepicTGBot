@@ -1,3 +1,10 @@
+async def on_startup(_): #функция вызывающая привествие в командной строке если бот успешно запущен
+    print('Бот был успешно запущен')
+
+# обязательно указать в аргументе on_startup=on_startup
+if __name__ == '__main__':
+   executor.start_polling(dp, on_startup=on_startup)
+
 @dp.message_handler() #Эхо бот в одну функцию ... пересылает нам то что мы ему прислали
 async def echo(message: types.Message):
     await message.answer(text=message.text) #Написать сообщение
@@ -53,3 +60,25 @@ async def check_zero(message: types.Message):
         await message.reply('YES')
     else:
         await message.reply('NO')
+
+
+@dp.message_handler(commands=['start']) #Автоматическое приветствие на команду /start
+async def start_command(message: types.Message):
+    await message.answer('<em>Привет, добро пожаловать в наш бот!</em>', parse_mode="HTML")
+#('<em>Привет, добро пожаловать в наш бот!</em>', parse_mode="HTML") parser_mode даёт возможность применять разметку текста по типу HTML
+
+
+@dp.message_handler(commands=['give']) #Отправка стикера на команду give
+async def start_command(message: types.Message):
+    await bot.send_sticker(message.from_user.id, sticker="CAACAgIAAxkBAAEG5RVjoLxDtsexaNuvodBr4kEh-TphBwACTRYAAnJ3wEiqLAI1EPSbGSwE")
+    await message.delete()# Просто удалит сообщение от пользователя что бы не было много спама
+#Индивидуальный код стикеров берем у бота https://t.me/idstickerbot
+
+@dp.message_handler() #эхо бот + эмодзи с авто удалением сообщения
+async def send_emoji(message: types.Message):
+    await message.reply(message.text + '👍')
+    await message.delete()
+
+@dp.message_handler(content_types=['sticker'])#Отправляет обратно айди стикера по входящему стикеру
+async def send_sticker_id(message: types.Message):
+    await message.answer(message.sticker.file_id)
