@@ -82,3 +82,8 @@ async def send_emoji(message: types.Message):
 @dp.message_handler(content_types=['sticker'])#Отправляет обратно айди стикера по входящему стикеру
 async def send_sticker_id(message: types.Message):
     await message.answer(message.sticker.file_id)
+
+
+@dp.message_handler(commands=['image'])
+async def send_image(message: types.Message):
+    await bot.send_photo(chat_id=message.chat.id, photo="#вставляем ссылку на картинку ")

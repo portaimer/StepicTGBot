@@ -11,6 +11,7 @@ HELP_COMMAND = """
 <b>/give</b> - <em>отправить gifку</em>
 <b>/start</b> - <em>начать работу с ботом</em>
 <b>Отправь боту стикер</b> - <em>получишь id стикера</em>
+<b>/image</b> - <em>Получить картинку</em>
 """# Создал новую переменную для описания списка команд что бы не переписывать их в функцию
 
 
@@ -20,30 +21,49 @@ dp = Dispatcher(bot)
 async def on_startup(_):
     print('Бот был успешно запущен')
 
+
+#@dp.message_handler()#Эхо бот
+#async def echo(message: types.Message):
+    #await bot.send_message(chat_id=message.from_user.id, text="Hello")#Бот присылает сообщение в личку пользователю
+
 @dp.message_handler(commands=['help'])
 async def help_command(message: types.Message):
-    await message.reply(text=HELP_COMMAND, parse_mode='HTML')
+    await message.reply(text=HELP_COMMAND, parse_mode="HTML")
+    await message.delete()
+
+
+@dp.message_handler(commands=['help'])#По команде /help  возвращает список команд HELP_COMMAND в личку пользователю
+async def help_command(message: types.Message):
+    await bot.send_message(chat_id=message.from_user.id, text=HELP_COMMAND, parse_mode="HTML")
     await message.delete()
 
 
 @dp.message_handler(content_types=['sticker'])#Отправляет обратно айди стикера по входящему стикеру
 async def send_sticker_id(message: types.Message):
     await message.answer(message.sticker.file_id)
+    await message.delete()
+
+
+@dp.message_handler(commands=['image'])#Получаем случйное изображение
+async def cmd_image(message: types.Message):
+    await bot.send_photo(message.chat.id, types.InputFile.from_url('https://bing.ioliu.cn/v1/rand'))
+    await message.delete()
 
 
 #@dp.message_handler(commands=['start']) #Автоматическое приветствие на команду /start
 #async def start_command(message: types.Message):
     #await message.answer('<em>Привет, добро пожаловать в наш бот!</em>', parse_mode="HTML")
+    #await message.delete()
 
 @dp.message_handler(commands=['give']) #Отправка стикера на команду give
 async def start_command(message: types.Message):
     await bot.send_sticker(message.from_user.id, sticker="CAACAgIAAxkBAAEG5RVjoLxDtsexaNuvodBr4kEh-TphBwACTRYAAnJ3wEiqLAI1EPSbGSwE")
     await message.delete()# Просто удалит сообщение от пользователя что бы не было много спама
 
-#@dp.message_handler() #эхо бот + эмодзи с авто удалением сообщения
-#async def send_emoji(message: types.Message):
-    #await message.reply(message.text + '👍')
-    #await message.delete()
+@dp.message_handler() #эхо бот + эмодзи с авто удалением сообщения
+async def send_emoji(message: types.Message):
+    await message.reply(message.text + '👍')
+    await message.delete()
 
 if __name__ == '__main__':
     executor.start_polling(dp, on_startup=on_startup)
