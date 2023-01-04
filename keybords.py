@@ -9,6 +9,6 @@ ib1 = InlineKeyboardButton(text='VK Создателя',
 
 ib2 = InlineKeyboardButton(text='Github Создателя',
                            url="https://github.com/portaimer")
-ikb.add(ib1,ib2)
+ikb.add(ib1, ib2)
 
 
