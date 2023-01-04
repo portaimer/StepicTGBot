@@ -5,9 +5,16 @@ import string
 import random
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove #Импртируем классы для создания клавиатуры
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
+from keybords import ikb
 
 # бот это сервер который будет взаимодействовать с API Telegram
+
+
+bot = Bot(TOKEN_API)
+dp = Dispatcher(bot)
+
+async def on_startup(_):
+    print('Бот был успешно запущен')
 
 HELP_COMMAND = """
 <b>/help</b> - <em>список комманд</em>
@@ -20,30 +27,16 @@ HELP_COMMAND = """
 """# Создал новую переменную для описания списка команд что бы не переписывать их в функцию
 
 
-bot = Bot(TOKEN_API)
-dp = Dispatcher(bot)
-
-async def on_startup(_):
-    print('Бот был успешно запущен')
-
-
 #Пилим клавиатуру для пользователя
 kb = ReplyKeyboardMarkup(resize_keyboard=True,)#Для того что бы клавиатура меняла свой размер в зависимости от устройстваю)
 b1 = KeyboardButton('/help')
 b2 = KeyboardButton('/give')
 b3 = KeyboardButton('/image')
 b4 = KeyboardButton('/location')
-kb.add(b1, b2, b3, b4,)
+b5 = KeyboardButton('/creator')
+kb.add(b1, b2, b3, b5)
 
 
-#Инлайн клавиатура
-ikb = InlineKeyboardMarkup(row_width=2)
-ib1 = InlineKeyboardButton(text='VK Создателя',
-                          url="https://vk.com/id306646249")
-
-ib2 = InlineKeyboardButton(text='Github Создателя',
-                           url="https://github.com/portaimer")
-ikb.add(ib1,ib2)
 
 @dp.message_handler(commands=['creator'])
 async def creator(message: types.Message):
@@ -51,6 +44,7 @@ async def creator(message: types.Message):
                            text='Где найти меня в сети',
                            parse_mode="HTML",
                            reply_markup=ikb)
+    await message.delete()
 
 
 #@dp.message_handler()#Эхо бот
@@ -67,7 +61,8 @@ async def creator(message: types.Message):
 async def help_command(message: types.Message):
     await bot.send_message(chat_id=message.from_user.id,
                            text='Привет Приятно Познакомиться Я FreePizzzza Bot, сейчас у вас появиться клавиатура она подскажет как со мной работать ',
-                           parse_mode="HTML",)
+                           parse_mode="HTML",
+                           reply_markup=kb)
     await message.delete()
 
 
@@ -91,17 +86,11 @@ async def cmd_image(message: types.Message):
     await message.delete()
 
 
-@dp.message_handler(commands=['location'])#Бот присылает локацию в личку из чата
-async def send_point(message: types.Message):
-    await bot.send_location(chat_id=message.from_user.id,
-                            latitude='55',
-                            longitude=74)
-
-
 @dp.message_handler(commands=['give']) #Отправка стикера на команду give
 async def start_command(message: types.Message):
     await bot.send_sticker(message.from_user.id, sticker="CAACAgIAAxkBAAEG5RVjoLxDtsexaNuvodBr4kEh-TphBwACTRYAAnJ3wEiqLAI1EPSbGSwE")
     await message.delete()# Просто удалит сообщение от пользователя что бы не было много спама
+
 
 #@dp.message_handler() #эхо бот + эмодзи с авто удалением сообщения
 #async def send_emoji(message: types.Message):
