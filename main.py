@@ -1,18 +1,14 @@
 import aiogram
 from aiogram import Bot, Dispatcher, executor, types
-from config import \
-    TOKEN_API  # авторизационный токен для подключения к телеграм API перенесен в отдельный файл config.py
-import string
-import random
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
-    ReplyKeyboardRemove  # Импртируем классы для создания клавиатуры
+from config import TOKEN_API
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove  # Импртируем классы для создания клавиатуры
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-# from keybords import ikb
+from keybords import ikb
 
 # бот это сервер который будет взаимодействовать с API Telegram
 
-
+TOKEN_API  # авторизационный токен для подключения к телеграм API перенесен в отдельный файл config.py
 bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
@@ -47,11 +43,11 @@ kb.add(b1, b2, b3, b5, b6)
 @dp.message_handler(commands=['vote'])
 async def vote_command(message: types.Message):
     ikb2 = InlineKeyboardMarkup(row_width=2)
-    ib1 = InlineKeyboardButton(text='👍',
+    ib2_1 = InlineKeyboardButton(text='👍',
                                callback_data="like")
-    ib2 = InlineKeyboardButton(text='👎',
+    ib2_2 = InlineKeyboardButton(text='👎',
                                callback_data="dislike")
-    ikb2.add(ib1, ib2)
+    ikb2.add(ib2_1, ib2_2)
 
     await bot.send_photo(chat_id=message.from_user.id,
                          photo='https://n1s1.elle.ru/48/7b/36/487b36300c62c5f0cb905da52aa874b4/728x486_1_30b570c2f6c0da65bb56095068e05768@940x627_0xc0a839a4_18087198581488362059.jpeg',
