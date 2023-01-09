@@ -278,3 +278,26 @@ async def cmd_image(message: types.Message):
 async def start_command(message: types.Message):
     await bot.send_sticker(message.from_user.id, sticker="CAACAgIAAxkBAAEG5RVjoLxDtsexaNuvodBr4kEh-TphBwACTRYAAnJ3wEiqLAI1EPSbGSwE")
     await message.delete()# Просто удалит сообщение от пользователя что бы не было много спама
+
+
+Опросник с инлайн клавиатурой и callback_query функцией
+@dp.message_handler(commands=['vote'])
+async def vote_command(message: types.Message):
+    ikb2 = InlineKeyboardMarkup(row_width=2)
+    ib1 = InlineKeyboardButton(text='👍',
+                               callback_data="like")
+    ib2 = InlineKeyboardButton(text='👎',
+                               callback_data="dislike")
+    ikb2.add(ib1, ib2)
+
+    await bot.send_photo(chat_id=message.from_user.id,
+                         photo='https://n1s1.elle.ru/48/7b/36/487b36300c62c5f0cb905da52aa874b4/728x486_1_30b570c2f6c0da65bb56095068e05768@940x627_0xc0a839a4_18087198581488362059.jpeg',
+                         caption='Нравиться котик?',
+                         reply_markup=ikb2)
+
+
+@dp.callback_query_handler()
+async def vote_callback(callback: types.CallbackQuery):
+    if callback.data == 'Like':
+        return await callback.answer(text='Тебе понравилась фотография!')
+    await callback.answer(text='Тебе не нравяться котики ?')
