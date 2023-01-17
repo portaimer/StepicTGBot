@@ -78,7 +78,6 @@ async def help_command(message: types.Message):
                            parse_mode="HTML",)
     await message.delete()
 
-
 @dp.message_handler(content_types=['sticker'])#Отправляет обратно айди стикера по входящему стикеру
 async def send_sticker_id(message: types.Message):
     await message.answer(message.sticker.file_id)
@@ -97,7 +96,10 @@ async def send_point(message: types.Message):
                             latitude='55',
                             longitude=74)
 
-
+#Очень хотел реализовать выдачу рандомных стикеров но не смог найти список ID стикеров телеграмм может поможет кто ???
+#Да бот умеет присылать по стикеру его айди ... но мне просто не когда создавать список ...
+#Может кто поможет если делать совсем не хрен.... Если реально интересно запушу бот на круглосуточном сервере .
+#Контакты для связи есть в этом боте https://t.me/FreePizzzabot
 @dp.message_handler(commands=['give']) #Отправка стикера на команду give
 async def start_command(message: types.Message):
     await bot.send_sticker(message.from_user.id, sticker="CAACAgIAAxkBAAEG5RVjoLxDtsexaNuvodBr4kEh-TphBwACTRYAAnJ3wEiqLAI1EPSbGSwE")
@@ -128,8 +130,9 @@ async def vote_command(message: types.Message):
 @dp.callback_query_handler()
 async def vote_callback(callback: types.CallbackQuery):
     if callback.data == 'Like':
-        return await callback.answer(text='Тебе понравилась фотография!')
-    await callback.answer(text='Тебе не нравяться котики ?')
+       await callback.answer(text='Тебе понравилась фотография!')
+    elif callback.data == 'dislike':
+        await callback.answer(text='Тебе не нравяться котики ?')
 
 
 if __name__ == '__main__':
