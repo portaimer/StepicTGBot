@@ -5,6 +5,9 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.dispatcher.filters import Text
 from keybords import ikb
+import asyncio
+from aiogram.utils.exceptions import BotBlocked #Ипортируем для проверки заблокирован ли бот
+
 
 # бот это сервер который будет взаимодействовать с API Telegram
 
@@ -106,6 +109,11 @@ async def start_command(message: types.Message):
                            sticker="CAACAgIAAxkBAAEG5RVjoLxDtsexaNuvodBr4kEh-TphBwACTRYAAnJ3wEiqLAI1EPSbGSwE")
     await message.delete()  # Просто удалит сообщение от пользователя что бы не было много спама
 
+
+@dp.errors_handler(exception=BotBlocked) #Функция проверки заблокировали бот
+async def error_bot_bloked_hendler(updeta: types.Update, exception: BotBlocked) ->bool:
+    print("Нас заблокировали")
+    return True
 
 if __name__ == '__main__':
     executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
